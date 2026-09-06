@@ -1,0 +1,28 @@
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs / temp
+*.log
+*.tmp
+
+# Dev scratch / unrelated files
+helloapp/
+hello.php
+setup.php
+.env*
+assets/images/image.jpeg
+
+# User uploads (keep demo images used by seed_demo_items.php)
+uploads/items/*
+uploads/profiles/*
+!uploads/items/.gitkeep
+!uploads/profiles/.gitkeep
+!uploads/items/casio_calculator.png
+!uploads/items/drawing_kit.png
+!uploads/items/dsa_book.png
+!uploads/items/study_chair.png
+!uploads/items/study_lamp.png
+!uploads/items/.htaccess
+!uploads/profiles/.htaccess

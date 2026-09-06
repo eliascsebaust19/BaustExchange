@@ -1,0 +1,15 @@
+# BAUST Exchange - production hardening
+Options -Indexes
+DirectoryIndex index.php
+
+# Block access to sensitive directories
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteRule ^config(/|$) - [F,L]
+    RewriteRule ^database(/|$) - [F,L]
+</IfModule>
+
+# Deny access to dotfiles and backup files
+<FilesMatch "^\.|\.(sql|log|bak|old|ini|md)$">
+    Require all denied
+</FilesMatch>

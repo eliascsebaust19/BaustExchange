@@ -1,0 +1,6 @@
+# Prevent browsing and executing scripts inside uploads
+Options -Indexes
+
+<FilesMatch "\.(php|php[0-9]|phtml|phar|cgi|pl|py|sh)$">
+    Require all denied
+</FilesMatch>

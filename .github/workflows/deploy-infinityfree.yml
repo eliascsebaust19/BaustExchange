@@ -1,0 +1,55 @@
+name: Deploy to InfinityFree
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: infinityfree-deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate production DB credentials
+        shell: bash
+        run: |
+          set -e
+          cat > config/db-credentials.php <<'EOF'
+          <?php
+          define('DB_HOST', '${{ secrets.PROD_DB_HOST }}');
+          define('DB_NAME', '${{ secrets.PROD_DB_NAME }}');
+          define('DB_USER', '${{ secrets.PROD_DB_USER }}');
+          define('DB_PASSWORD', '${{ secrets.PROD_DB_PASSWORD }}');
+          EOF
+
+      - name: Generate production Google OAuth credentials
+        shell: bash
+        run: |
+          set -e
+          cat > config/google-credentials.php <<'EOF'
+          <?php
+          define('GOOGLE_CLIENT_ID', '${{ secrets.PROD_GOOGLE_CLIENT_ID }}');
+          define('GOOGLE_CLIENT_SECRET', '${{ secrets.PROD_GOOGLE_CLIENT_SECRET }}');
+          define('GOOGLE_REDIRECT_URI', '${{ secrets.PROD_SITE_URL }}/google-callback.php');
+          EOF
+
+      - name: Deploy via FTP
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.FTP_SERVER }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          server-dir: /htdocs/BaustExchange/
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/*.md
+            **/.gitkeep
+          timeout: 180000
+          log-level: standard
